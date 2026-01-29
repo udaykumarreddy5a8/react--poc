@@ -8,7 +8,7 @@ const Login = () => {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // ✅ INSIDE component
+  const [showPassword, setShowPassword] = useState(false); 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -16,10 +16,10 @@ const Login = () => {
   const validate = () => {
     const err = {};
     if (!username.trim()) err.username = "Username is required";
-    else if (username.trim() !== "1")
+    else if (username.trim() !== "react@deloitte.com")
       err.username = "Invalid Username";
     if (!password.trim()) err.password = "Password is required";
-    else if (password.trim() !== "1") err.password = "Invalid Password";
+    else if (password.trim() !== "React@123") err.password = "Invalid Password";
     setErrors(err);
     return Object.keys(err).length === 0;
   };
@@ -36,6 +36,7 @@ const Login = () => {
          localStorage.setItem("username", username);
          localStorage.setItem("token", "dummyToken");
         navigate("/dashboard", { replace: true });
+        //alert("Login Successful"+ username);
       } else {
         alert("Invalid Credentials");
       }
