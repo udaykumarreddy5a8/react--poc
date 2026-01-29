@@ -19,7 +19,7 @@ const Login = () => {
     else if (username.trim() !== "react@deloitte.com")
       err.username = "Invalid Username";
     if (!password.trim()) err.password = "Password is required";
-    else if (password.trim() !== "React@123") err.password = "Invalid Password";
+    else if (password.trim() !== "react@123") err.password = "Invalid Password";
     setErrors(err);
     return Object.keys(err).length === 0;
   };
