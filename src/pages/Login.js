@@ -16,10 +16,10 @@ const Login = () => {
   const validate = () => {
     const err = {};
     if (!username.trim()) err.username = "Username is required";
-    else if (username.trim() !== "react@deloitte.com")
+    else if (username.trim() !== "1")
       err.username = "Invalid Username";
     if (!password.trim()) err.password = "Password is required";
-    else if (password.trim() !== "react@123") err.password = "Invalid Password";
+    else if (password.trim() !== "1") err.password = "Invalid Password";
     setErrors(err);
     return Object.keys(err).length === 0;
   };

@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
 import Header from "../components/Header";
-import { pocApi, submitApi } from "../services/api";
+import { useNavigate } from "react-router-dom";
+import { pocApi } from "../services/api";
+
+
+const DUMMY_POST_API = "https://jsonplaceholder.typicode.com/posts";
 
 const Dashboard = () => {
+  const navigate = useNavigate(); 
+
   const [pocList, setPocList] = useState([]);
   const [form, setForm] = useState({
     empId: "",
@@ -34,21 +40,37 @@ const Dashboard = () => {
       });
   }, []);
 
-  const handleSubmit = async () => {
-    try {
-      const res = await fetch(submitApi, {
-        method: "POST",
-        body: JSON.stringify(form),
-        headers: { "Content-Type": "application/json" },
-      });
+const handleSubmit = async () => {
+  try {
+    sessionStorage.setItem("employeeForm", JSON.stringify(form));
 
-      const data = await res.json();
-      sessionStorage.setItem("employeeData", JSON.stringify(data));
-      alert("Submitted Successfully");
-    } catch (e) {
-      alert("Submit Failed ❌");
-    }
-  };
+    await fetch(DUMMY_POST_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+
+    alert("Submit Successful ✅");  
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    sessionStorage.clear();
+
+    navigate("/", { replace: true }); 
+  } catch (e) {
+    alert("Submit Failed ❌");
+  }
+};
+
+
+
+const handleTechChange = (tech) => {
+  setForm((prev) => ({
+    ...prev,
+    tech: prev.tech.includes(tech)
+      ? prev.tech.filter((t) => t !== tech)
+      : [...prev.tech, tech],
+  }));
+};
 
   return (
     <>
@@ -105,32 +127,30 @@ const Dashboard = () => {
           ))}
         </select>
 
-        {/* Tech Checkboxes */}
-        <div style={{ display: "flex", justifyContent: "space-between" }} className="col-md-12">
-          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px", color: "#323030", fontWeight: "bold" }} className="col-md-4">
-            <input type="checkbox" />
-            <div style={{ paddingBottom: "15px" }}>useEffect</div>
-          </div>
-
-          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px", color: "#323030", fontWeight: "bold" }} className="col-md-4">
-            <input type="checkbox" />
-            <div style={{ paddingBottom: "15px" }}>useState</div>
-          </div>
-
-          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px", color: "#323030", fontWeight: "bold" }} className="col-md-4">
-            <input type="checkbox" />
-            <div style={{ paddingBottom: "15px" }}>useMemo</div>
-          </div>
-        </div>
-
-        <div style={{ display: "flex", justifyContent: "space-between" }} className="col-md-12">
-          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px", color: "#323030", fontWeight: "bold" }} className="col-md-4">
-            <input type="checkbox" />
-            <div style={{ paddingBottom: "15px" }}>useCallback</div>
-          </div>
-        </div>
-
-        <button onClick={handleSubmit}>Submit</button>
+{/* Tech Checkboxes */}
+<div className="col-md-12" style={{ display: "flex", justifyContent: "space-between" }}>
+  {["useEffect", "useState", "useMemo", "useCallback"].map((tech) => (
+    <div
+      key={tech}
+      className="col-md-4"
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
+        color: "#323030",
+        fontWeight: "bold",
+      }}
+    >
+      <input
+        type="checkbox"
+        checked={form.tech.includes(tech)}
+        onChange={() => handleTechChange(tech)}
+      />
+      <div style={{ paddingBottom: "15px" }}>{tech}</div>
+    </div>
+  ))}
+</div>
+    <button onClick={handleSubmit}>Submit</button>
       </div>
     </>
   );
